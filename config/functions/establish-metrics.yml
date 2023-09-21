@@ -7,3 +7,5 @@ function:
       - "!**/*"
       - "src/establish-metrics.py"
   runtime: python3.7
+  layers:
+    - { Ref: OmniLiveLogisticsLambdaLayer }

@@ -13,5 +13,12 @@ provider:
   #   subnetIds:
   #     - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
 
+layers:
+  python-app-dependencies:
+    path: lambdaLayer/lib/python
+    compatibleRuntimes:
+      - python3.7
+    description: "Dependencies jsonpath_rw for python functions"
+
 functions:
   omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
