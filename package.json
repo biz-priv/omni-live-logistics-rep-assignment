@@ -1,0 +1,22 @@
+{
+  "name": "omni-live-logistics-rep-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "serverless": "^2.72.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bizcloud-experts/omni-live-logistics-rep-assignment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bizcloud-experts/omni-live-logistics-rep-assignment/issues"
+  },
+  "homepage": "https://github.com/bizcloud-experts/omni-live-logistics-rep-assignment#readme"
+}

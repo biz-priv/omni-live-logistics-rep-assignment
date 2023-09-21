@@ -1,0 +1,9 @@
+function:
+  name: omni_live_logistics_establish_metrics-${self:provider.stage}
+  handler: src/establish-metrics.handler
+  description: omni live logistics establish metrics
+  package:
+    patterns:
+      - "!**/*"
+      - "src/establish-metrics.py"
+  runtime: python3.7

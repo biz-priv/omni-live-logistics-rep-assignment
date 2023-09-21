@@ -1,0 +1,17 @@
+service: omni-live-logistics-rep-assignment
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  deploymentBucket: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+  # role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
+  # vpc:
+  #   securityGroupIds:
+  #     - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
+  #   subnetIds:
+  #     - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
+
+functions:
+  omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
