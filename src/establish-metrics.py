@@ -21,10 +21,12 @@ def handler(event, context):
     mcleod_headers = {'Accept': 'application/json',
                       'Content-Type': 'application/json'}
 
-    load_counter = {}
-    track_counter = {}
-    ontime_counter = {}
-    movements = {}
+    data = []
+
+    # load_counter = {}
+    # track_counter = {}
+    # ontime_counter = {}
+    # movements = {}
 
     # datetime.utcnow().replace(tzinfo=pytz.utc)
     # week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
@@ -35,10 +37,18 @@ def handler(event, context):
     for user in list_of_users:
         url = f"https://tms-lvlp.loadtracking.com/ws/api/movements/search?movement.dispatcher_user_id={user}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
         response = requests.get(url, auth=(username, password), headers=mcleod_headers)
-        load_counter[user] = 0
-        track_counter[user] = 0
-        ontime_counter[user] = 0
-        movements[user] = []
+        
+        userData = {
+            "load_counter": 0,
+            "track_counter": 0,
+            "ontime_counter": 0,
+            "movements": []
+        }
+        
+        # load_counter[user] = 0
+        # track_counter[user] = 0
+        # ontime_counter[user] = 0
+        # movements[user] = []
         output = response.json()
         for move in range(len(output)):
             num_of_stops = len(output[move]['stops'])
@@ -58,12 +68,12 @@ def handler(event, context):
 
             if actual_arrival > week_ago:
                 # add load to load_counter and to the movement record
-                load_counter[user] = load_counter[user] + 1
-                movements[user].append(output[move]['id'])
+                userData["load_counter"] = userData["load_counter"] + 1
+                userData["movements"].append(output[move]['id'])
 
                 #use data previously gathered to determine if the load was delivered ontime
                 if actual_arrival <= appt_time:
-                    ontime_counter[user] = ontime_counter[user] + 1
+                    userData["ontime_counter"] = userData["ontime_counter"] + 1
 
                 # get callins to determine if the load tracked
                 callin_url = f"https://tms-lvlp.loadtracking.com/ws/api/callins/M/{output[move]['id']}"
@@ -78,12 +88,10 @@ def handler(event, context):
                     except:
                         pass
                 if lat != 0 and long != 0:
-                    track_counter[user] = track_counter[user] + 1
+                    userData["track_counter"] = userData["track_counter"] + 1
             else:
                 pass
-    print(load_counter)
-    print(track_counter)
-    print(ontime_counter)
-    print(movements)
+
+    print(userData)
 
     return "Funtion ran successfully"
