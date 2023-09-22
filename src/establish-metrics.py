@@ -11,7 +11,8 @@ from boto3.dynamodb.types import TypeSerializer
 dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 
 def handler(event, context):
-    list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
+    # list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
+    list_of_users = ['bednchr']
 
     #determine timestamps
     now = datetime.datetime.utcnow()
@@ -52,6 +53,7 @@ def handler(event, context):
             "ontime_counter": 0,
             "movements": []
         }
+        data.append(userData)
         
         output = response.json()
         for move in range(len(output)):
@@ -93,12 +95,13 @@ def handler(event, context):
             else:
                 pass
     
-    print(userData)
+    print(data)
 
     serializer = TypeSerializer()
 
     for userRecord in data:
         dyn_item = {key: serializer.serialize(value) for key, value in userRecord.items()}
+        print(dyn_item)
         put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
 
     return "Function ran successfully"

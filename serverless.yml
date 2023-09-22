@@ -6,6 +6,17 @@ provider:
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
   deploymentBucket: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
   # role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
   # vpc:
   #   securityGroupIds:
