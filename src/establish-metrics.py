@@ -9,6 +9,7 @@ import boto3
 from boto3.dynamodb.types import TypeSerializer
 
 dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+ses = boto3.client('ses', region='us-east-1')
 
 def handler(event, context):
     # list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
@@ -53,7 +54,8 @@ def handler(event, context):
             "load_counter": 0,
             "track_counter": 0,
             "ontime_counter": 0,
-            "movements": []
+            "movements": [],
+            "qualified": False
         }
         data.append(userData)
         
@@ -96,6 +98,9 @@ def handler(event, context):
                     userData["track_counter"] = userData["track_counter"] + 1
             else:
                 pass
+
+            if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
+                userData["qualified"]=True
     
     print(data)
 
@@ -107,6 +112,36 @@ def handler(event, context):
         put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
 
     return "Function ran successfully"
+
+def sendMail():
+
+    with open('your_file.html', 'r', encoding='utf-8') as file:
+    # Read the contents of the file into a string
+        html_string = file.read()
+
+    # user
+    html_string.replace("")
+
+    response = ses.send_email(
+            Destination={
+                'ToAddresses': [
+                    "abhishek@bizcloudexperts.com",
+                ],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': "UTF-8",
+                        'Data': BODY_HTML,
+                    }
+                },
+                'Subject': {
+                    'Data': "Parade Assignment Qualified Users",
+                    'Charset': "UTF-8",
+                },
+            },
+            Source="abhishek@bizcloudexperts.com"
+    )
 
 
 # Get a reference to an existing table
