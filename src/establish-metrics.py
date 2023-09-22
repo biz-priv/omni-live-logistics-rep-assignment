@@ -31,14 +31,6 @@ def handler(event, context):
 
     data = []
 
-    # load_counter = {}
-    # track_counter = {}
-    # ontime_counter = {}
-    # movements = {}
-
-    # datetime.utcnow().replace(tzinfo=pytz.utc)
-    # week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
-
     week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
     week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
