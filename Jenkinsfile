@@ -24,7 +24,7 @@ pipeline {
                     echo "GIT_BRANCH: ${GIT_BRANCH}"
                     sh """
                         npm i
-                        cd lambdaLayer/lib/python
+                        cd lambdaLayer/lib/python3.7
                         pip install -r requirements.txt
                     """
                 }
