@@ -53,8 +53,8 @@ def handler(event, context):
                     appt_time = datetime.datetime.strptime(appt_time, '%Y%m%d%H%M%S%z')
                     actual_arrival = datetime.datetime.strptime(output[move]['stops'][stop]['actual_arrival'], '%Y%m%d%H%M%S%z')
 
-            print(actual_arrival)
-            print(week_ago)
+            # print(actual_arrival)
+            # print(week_ago)
 
             if actual_arrival > week_ago:
                 # add load to load_counter and to the movement record
