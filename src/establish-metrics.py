@@ -1,7 +1,7 @@
 import datetime
 import dateutil.tz
 import requests
-# import pytz
+import pytz
 
 def handler(event, context):
     list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']

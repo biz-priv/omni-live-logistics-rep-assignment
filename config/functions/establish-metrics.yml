@@ -9,3 +9,4 @@ function:
   runtime: python3.7
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
+  timeout: 300
