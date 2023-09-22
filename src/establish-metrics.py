@@ -12,7 +12,16 @@ dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 
 def handler(event, context):
     # list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
-    list_of_users = ['bednchr']
+    list_of_users = {"bednchr": "cbednarski@omnilogistics.com",
+                  "browaus": "abrown@omnilogistics.com",
+                  "casajak": "jcasati@omnilogistics.com",
+                  "cruzale": "alcruz@omnilogistics.com",
+                  "elizmau": "melizalde@omnilogistics.com",
+                  "hodgbri": "bhodge@omnilogistics.com",
+                  "pilczac": "zpilcher@omnilogistics.com",
+                  "ruizrob": "rruiz@omnilogistics.com",
+                  "schmric": "rschmidt@omnilogistics.com"
+    }
 
     #determine timestamps
     now = datetime.datetime.utcnow()
@@ -34,12 +43,13 @@ def handler(event, context):
     week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
     week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
-    for user in list_of_users:
-        url = f"https://tms-lvlp.loadtracking.com/ws/api/movements/search?movement.dispatcher_user_id={user}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
+    for user_id, email in list_of_users.items():
+        url = f"https://tms-lvlp.loadtracking.com/ws/api/movements/search?movement.dispatcher_user_id={user_id}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
         response = requests.get(url, auth=(username, password), headers=mcleod_headers)
         
         userData = {
-            "user_id" : user,
+            "user_id" : user_id,
+            "email" : email,
             "load_counter": 0,
             "track_counter": 0,
             "ontime_counter": 0,
