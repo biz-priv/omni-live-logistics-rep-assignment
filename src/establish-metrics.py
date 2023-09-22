@@ -1,5 +1,6 @@
 import datetime
 import requests
+import pytz
 
 def handler(event, context):
     list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
@@ -24,6 +25,12 @@ def handler(event, context):
     ontime_counter = {}
     movements = {}
 
+    # datetime.utcnow().replace(tzinfo=pytz.utc)
+    # week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
+
+    week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
+    week_ago = week_ago.replace(tzinfo=pytz.timezone("US/Central"))
+
     for user in list_of_users:
         url = f"https://tms-lvlp.loadtracking.com/ws/api/movements/search?movement.dispatcher_user_id={user}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
         response = requests.get(url, auth=(username, password), headers=mcleod_headers)
@@ -44,6 +51,9 @@ def handler(event, context):
                         appt_time = output[move]['stops'][stop]['sched_arrive_early']
                     appt_time = datetime.datetime.strptime(appt_time, '%Y%m%d%H%M%S%z')
                     actual_arrival = datetime.datetime.strptime(output[move]['stops'][stop]['actual_arrival'], '%Y%m%d%H%M%S%z')
+
+            print(actual_arrival)
+            print(week_ago)
 
             if actual_arrival > week_ago:
                 # add load to load_counter and to the movement record
