@@ -1,6 +1,7 @@
 import datetime
+import dateutil.tz
 import requests
-import pytz
+# import pytz
 
 def handler(event, context):
     list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
@@ -29,7 +30,7 @@ def handler(event, context):
     # week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
 
     week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
-    week_ago = week_ago.replace(tzinfo=pytz.timezone("US/Central"))
+    week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
     for user in list_of_users:
         url = f"https://tms-lvlp.loadtracking.com/ws/api/movements/search?movement.dispatcher_user_id={user}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
