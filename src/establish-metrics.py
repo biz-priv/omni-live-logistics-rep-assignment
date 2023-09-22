@@ -6,6 +6,7 @@ import os
 # import pytz
 
 import boto3
+from boto3.dynamodb.types import TypeSerializer
 
 dynamodb = boto3.client('dynamodb', region_name='us-east-1')
 
@@ -94,9 +95,11 @@ def handler(event, context):
     
     print(userData)
 
-    table_obj = get_table(os.environ["USER_METRICS_TABLE"]) 
+    serializer = TypeSerializer()
+
     for userRecord in data:
-        put_item(table_obj, userRecord)
+        dyn_item = {key: serializer.serialize(value) for key, value in userRecord.items()}
+        put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
 
     return "Function ran successfully"
 
@@ -107,8 +110,8 @@ def get_table(table_name):
     return table
 
 # Put an item into a table
-def put_item(table, item):
-    response = table.put_item(Item=item)
+def put_item(tableName, item):
+    response = dynamodb.put_item(TableName=tableName, Item=item)
     print("PutItem succeeded:", response)
 
 # Get an item from a table using its primary key
