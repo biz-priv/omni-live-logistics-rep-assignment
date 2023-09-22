@@ -9,10 +9,9 @@ import boto3
 from boto3.dynamodb.types import TypeSerializer
 
 dynamodb = boto3.client('dynamodb', region_name='us-east-1')
-ses = boto3.client('ses', region='us-east-1')
+ses = boto3.client('ses', region_name='us-east-1')
 
 def handler(event, context):
-    # list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
     list_of_users = {"bednchr": "cbednarski@omnilogistics.com",
                   "browaus": "abrown@omnilogistics.com",
                   "casajak": "jcasati@omnilogistics.com",
@@ -111,22 +110,23 @@ def handler(event, context):
         print(dyn_item)
         put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
 
-    sendMail()
+    sendMail(data)
 
     return "Function ran successfully"
 
-def sendMail( userData ):
+def sendMail( data ):
 
     qualified_users = [f"""<div
             style="font-family: inherit; text-align: inherit">
-            {user["user_id"]}</div>""" for user in userData if user["qualified"] ]
+            {user["user_id"]}</div>""" for user in data if user["qualified"] ]
+            
 
-    with open('your_file.html', 'r', encoding='utf-8') as file:
+    with open(os.getcwd() + '/src/shared/res/morning_email.html', 'r', encoding='utf-8') as file:
     # Read the contents of the file into a string
         html_string = file.read()
 
-    # user
-    html_string.replace("{{user-list}}", qualified_users.join());
+    print("".join(qualified_users))
+    html_string = html_string.replace("{{user-list}}", "".join(qualified_users));
 
     response = ses.send_email(
         Destination={
@@ -146,7 +146,7 @@ def sendMail( userData ):
                 'Charset': "UTF-8",
             },
         },
-        Source="abhishek@bizcloudexperts.com"
+        Source="noreply@omnilogistics.com"
     )
 
 
