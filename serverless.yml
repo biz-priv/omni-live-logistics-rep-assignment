@@ -26,3 +26,7 @@ layers:
 functions:
   omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
   omni_live_update-dispatcher_metrics: ${file(config/functions/update-dispatcher.yml):function}
+
+resources:
+  Resources:
+    UserMetricTable: ${file(config/dynamodb/user-metric-table.yml):UserMetricTable}

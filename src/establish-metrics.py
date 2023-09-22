@@ -1,7 +1,9 @@
 import datetime
 import dateutil.tz
 import requests
-import pytz
+import os
+from shared.dynamo import put_item, get_table
+# import pytz
 
 def handler(event, context):
     list_of_users = ['bednchr','browaus','casajak','cruzale','elizmau','hodgbri','pilczac','ruizrob','schmric']
@@ -39,16 +41,13 @@ def handler(event, context):
         response = requests.get(url, auth=(username, password), headers=mcleod_headers)
         
         userData = {
+            "user_id" : user,
             "load_counter": 0,
             "track_counter": 0,
             "ontime_counter": 0,
             "movements": []
         }
         
-        # load_counter[user] = 0
-        # track_counter[user] = 0
-        # ontime_counter[user] = 0
-        # movements[user] = []
         output = response.json()
         for move in range(len(output)):
             num_of_stops = len(output[move]['stops'])
@@ -62,9 +61,6 @@ def handler(event, context):
                         appt_time = output[move]['stops'][stop]['sched_arrive_early']
                     appt_time = datetime.datetime.strptime(appt_time, '%Y%m%d%H%M%S%z')
                     actual_arrival = datetime.datetime.strptime(output[move]['stops'][stop]['actual_arrival'], '%Y%m%d%H%M%S%z')
-
-            # print(actual_arrival)
-            # print(week_ago)
 
             if actual_arrival > week_ago:
                 # add load to load_counter and to the movement record
@@ -91,7 +87,11 @@ def handler(event, context):
                     userData["track_counter"] = userData["track_counter"] + 1
             else:
                 pass
-
+    
     print(userData)
 
-    return "Funtion ran successfully"
+    table_obj = get_table(os.environ["USER_METRICS_TABLE"]) 
+    for userRecord in data:
+        put_item(table_obj, userRecord)
+
+    return "Function ran successfully"

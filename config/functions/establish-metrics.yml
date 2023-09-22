@@ -10,3 +10,5 @@ function:
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
   timeout: 300
+  environment:
+    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
