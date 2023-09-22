@@ -111,36 +111,42 @@ def handler(event, context):
         print(dyn_item)
         put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
 
+    sendMail()
+
     return "Function ran successfully"
 
-def sendMail():
+def sendMail( userData ):
+
+    qualified_users = [f"""<div
+            style="font-family: inherit; text-align: inherit">
+            {user["user_id"]}</div>""" for user in userData if user["qualified"] ]
 
     with open('your_file.html', 'r', encoding='utf-8') as file:
     # Read the contents of the file into a string
         html_string = file.read()
 
     # user
-    html_string.replace("")
+    html_string.replace("{{user-list}}", qualified_users.join());
 
     response = ses.send_email(
-            Destination={
-                'ToAddresses': [
-                    "abhishek@bizcloudexperts.com",
-                ],
-            },
-            Message={
-                'Body': {
-                    'Html': {
-                        'Charset': "UTF-8",
-                        'Data': BODY_HTML,
-                    }
-                },
-                'Subject': {
-                    'Data': "Parade Assignment Qualified Users",
+        Destination={
+            'ToAddresses': [
+                "abhishek@bizcloudexperts.com",
+            ],
+        },
+        Message={
+            'Body': {
+                'Html': {
                     'Charset': "UTF-8",
-                },
+                    'Data': html_string,
+                }
             },
-            Source="abhishek@bizcloudexperts.com"
+            'Subject': {
+                'Data': "Parade Assignment Qualified Users",
+                'Charset': "UTF-8",
+            },
+        },
+        Source="abhishek@bizcloudexperts.com"
     )
 
 
