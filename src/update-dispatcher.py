@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-from .shared.api import searchParadeLoads, getMovementById, updateMovement
+from shared.api import searchParadeLoads, getMovementById, updateMovement
 
 def handler(event, context):
     find_parade_loads()

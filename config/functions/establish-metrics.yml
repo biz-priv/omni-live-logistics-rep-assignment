@@ -10,6 +10,6 @@ function:
   runtime: python3.7
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
-  timeout: 300
+  timeout: 600
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}

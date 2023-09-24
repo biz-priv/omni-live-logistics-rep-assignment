@@ -6,8 +6,8 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-from .shared.dynamo import put_item
-from .shared.api import searchMovementByUser, callins
+from shared.dynamo import put_item
+from shared.api import searchMovementByUser, callins
 # import pytz
 
 
