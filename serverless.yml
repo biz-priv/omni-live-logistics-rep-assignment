@@ -34,7 +34,7 @@ package:
 
 layers:
   OmniLiveLogistics:
-    path: lambdaLayer/lib/python3.7/site-packages
+    path: lambdaLayer/lib/python3.7
     compatibleRuntimes:
       - python3.7
     description: "Dependencies jsonpath_rw for python functions"
