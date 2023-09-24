@@ -8,8 +8,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.dynamo import put_item
 from shared.api import searchMovementByUser, callins
-# import pytz
-
 
 import boto3
 from boto3.dynamodb.types import TypeSerializer
@@ -19,15 +17,16 @@ ses = boto3.client('ses', region_name='us-east-1')
 def handler(event, context):
 
     try:
-        list_of_users = {"bednchr": "cbednarski@omnilogistics.com",
-                    "browaus": "abrown@omnilogistics.com",
-                    "casajak": "jcasati@omnilogistics.com",
-                    "cruzale": "alcruz@omnilogistics.com",
-                    "elizmau": "melizalde@omnilogistics.com",
-                    "hodgbri": "bhodge@omnilogistics.com",
-                    "pilczac": "zpilcher@omnilogistics.com",
-                    "ruizrob": "rruiz@omnilogistics.com",
-                    "schmric": "rschmidt@omnilogistics.com"
+        list_of_users = {
+            "bednchr": "cbednarski@omnilogistics.com",
+            "browaus": "abrown@omnilogistics.com",
+            "casajak": "jcasati@omnilogistics.com",
+            "cruzale": "alcruz@omnilogistics.com",
+            "elizmau": "melizalde@omnilogistics.com",
+            "hodgbri": "bhodge@omnilogistics.com",
+            "pilczac": "zpilcher@omnilogistics.com",
+            "ruizrob": "rruiz@omnilogistics.com",
+            "schmric": "rschmidt@omnilogistics.com"
         }
 
         #determine timestamps
@@ -38,7 +37,6 @@ def handler(event, context):
         now = now.strftime('%Y%m%d%H%M%S%z') + '-0000'
         yesterday = yesterday.strftime('%Y%m%d%H%M%S%z') + '-0000'
         yesterday = datetime.datetime.strptime(yesterday, '%Y%m%d%H%M%S%z')
-
 
         data = []
 

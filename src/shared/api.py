@@ -1,10 +1,11 @@
 import requests
+import os
 
-username = "apiuser"
-password = "lvlpapiuser"
+base_url = os.environ["API_URL"]
+username = os.environ["API_USERNAME"]
+password = os.environ["API_PASSWORD"]
 mcleod_headers = {'Accept': 'application/json',
                 'Content-Type': 'application/json'}
-base_url = "https://tms-lvlp.loadtracking.com/ws"
 
 def searchMovementByUser(user_id):
     url = f"{base_url}/api/movements/search?movement.dispatcher_user_id={user_id}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"

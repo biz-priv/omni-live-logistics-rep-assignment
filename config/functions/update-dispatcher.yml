@@ -9,3 +9,8 @@ function:
   runtime: python3.7
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
+  environment:
+    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/api~true}
+    API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
+    API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
