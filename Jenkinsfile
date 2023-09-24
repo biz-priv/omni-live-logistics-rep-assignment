@@ -25,7 +25,7 @@ pipeline {
                     sh """
                         npm i
                         cd lambdaLayer/lib/python3.7
-                        pip install -r requirements.txt
+                        pip install -r requirements.txt -t ./site-packages
                     """
                 }
             }
