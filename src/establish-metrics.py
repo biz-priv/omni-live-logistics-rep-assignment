@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from .shared.dynamo import put_item
-from .shared.api import searchMovement, callins
+from .shared.api import searchMovementByUser, callins
 # import pytz
 
 
@@ -46,7 +46,7 @@ def handler(event, context):
         week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
         for user_id, email in list_of_users.items():
-            response = searchMovement(user_id)
+            response = searchMovementByUser(user_id)
             
             userData = {
                 "user_id" : user_id,
