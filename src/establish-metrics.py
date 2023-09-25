@@ -46,6 +46,10 @@ def handler(event, context):
         for user_id, email in list_of_users.items():
             response = searchMovementByUser(user_id)
             
+            if ( response.status_code < 200 and response.status_code >= 300 ):
+                print(f"Error encountered in searchMovementByUser, user_id - {user_id}, response - {response.json()}")
+                continue
+
             userData = {
                 "user_id" : user_id,
                 "email" : email,
@@ -82,6 +86,11 @@ def handler(event, context):
 
                     # get callins to determine if the load tracked
                     callin_response = callins(output[move]['id'])
+
+                    if ( callin_response.status_code < 200 and callin_response.status_code >= 300 ):
+                        print(f"Error encountered in callin_response, move_id - {output[move]['id']}, response - {callin_response.json()}")
+                        continue
+
                     callin_output = callin_response.json()
                     lat = 0
                     long = 0
@@ -99,14 +108,16 @@ def handler(event, context):
                 if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
                     userData["qualified"]="true"
         
-        print(data)
 
         serializer = TypeSerializer()
 
         for userRecord in data:
-            dyn_item = {key: serializer.serialize(value) for key, value in userRecord.items()}
-            print(dyn_item)
-            put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
+            try:
+                dyn_item = {key: serializer.serialize(value) for key, value in userRecord.items()}
+                print(dyn_item)
+                put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
+            except Exception as e:
+                print(F"Error while saving record to dyanmo, error - {e} ,record - {userRecord}")
 
         sendMail(data)
 
