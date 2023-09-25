@@ -46,16 +46,16 @@ def handler(event, context):
         week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
         week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
-        for user_id, email in list_of_users():
-            response = searchMovementByUser(user_id)
+        for user in list_of_users:
+            response = searchMovementByUser(user["user_id"])
             
-            if ( response.status_code < 200 and response.status_code >= 300 ):
-                print(f"Error encountered in searchMovementByUser, user_id - {user_id}, response - {response.json()}")
+            if response.status_code < 200 and response.status_code >= 300:
+                print(f"Error encountered in searchMovementByUser, user_id - {user['user_id']}, response - {response.json()}")
                 continue
 
             userData = {
-                "user_id" : user_id,
-                "email" : email,
+                "user_id" : user["user_id"],
+                "email" : user["email"],
                 "load_counter": 0,
                 "track_counter": 0,
                 "ontime_counter": 0,
