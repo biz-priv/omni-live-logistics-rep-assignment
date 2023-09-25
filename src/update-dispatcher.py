@@ -1,12 +1,13 @@
-import datetime
-import requests
 import os
 import sys
+import boto3
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.api import searchParadeLoads, getMovementById, updateMovement
 from shared.user import get_qualified_users
+
+ses = boto3.client('ses', region_name='us-east-1')
 
 def handler(event, context):
     users = get_qualified_users()
@@ -26,10 +27,12 @@ def find_parade_loads(users):
                 print('There are multiple loads')
                 for move in range(len(output)):
                     update_dispatcher(output[move]['id'], users[index]["user_id"])
+                    sendMailToUser( users[index]["user_id"], output[move]['id'] )
                     index = index+1
             else:
                 print('There is one load')
                 update_dispatcher(output['id'], users[index]["user_id"])
+                sendMailToUser(users[index]["user_id"], output['id'] )
                 index = index+1
     except Exception as error:
         print(error)
@@ -51,30 +54,32 @@ def update_dispatcher(movement_id, new_user):
         print(f"Error in updating dispatcher, movement_id - {movement_id}, new_user - {new_user}")
         print(error)
         raise
-    
-    users = []
-    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
-    scan_kwargs = {
-        'FilterExpression': "#qualified = :qualified",
-        'ExpressionAttributeValues': {
-            ':qualified' : "true" 
-        },
-        'ExpressionAttributeNames': {
-            '#qualified' : 'qualified'
-        }
-    }
-    try:
-        done = False
-        start_key = None
-        while not done:
-            if start_key:
-                scan_kwargs['ExclusiveStartKey'] = start_key
-            response = table.scan(**scan_kwargs)
-            users.extend(response.get('Items', []))
-            start_key = response.get('LastEvaluatedKey', None)
-            done = start_key is None
-    except Exception as err:
-        print("Exception in scaning users")
-        raise
 
-    return users
+def sendMailToUser( email, moveId ):
+
+    with open(os.getcwd() + '/src/shared/res/assignment_notification.html', 'r', encoding='utf-8') as file:
+    # Read the contents of the file into a string
+        html_string = file.read()
+
+    html_string = html_string.replace("{{ order_id }}", moveId)
+
+    response = ses.send_email(
+        Destination={
+            'ToAddresses': [
+                email
+            ],
+        },
+        Message={
+            'Body': {
+                'Html': {
+                    'Charset': "UTF-8",
+                    'Data': html_string,
+                }
+            },
+            'Subject': {
+                'Data': f"Assigned Parade Order {moveId}",
+                'Charset': "UTF-8",
+            },
+        },
+        Source="noreply@omnilogistics.com"
+    )
