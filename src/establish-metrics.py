@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.dynamo import put_item
 from shared.api import searchMovementByUser, callins
+from shared.user import get_all_users
 
 import boto3
 from boto3.dynamodb.types import TypeSerializer
@@ -17,17 +18,19 @@ ses = boto3.client('ses', region_name='us-east-1')
 def handler(event, context):
 
     try:
-        list_of_users = {
-            "bednchr": "cbednarski@omnilogistics.com",
-            "browaus": "abrown@omnilogistics.com",
-            "casajak": "jcasati@omnilogistics.com",
-            "cruzale": "alcruz@omnilogistics.com",
-            "elizmau": "melizalde@omnilogistics.com",
-            "hodgbri": "bhodge@omnilogistics.com",
-            "pilczac": "zpilcher@omnilogistics.com",
-            "ruizrob": "rruiz@omnilogistics.com",
-            "schmric": "rschmidt@omnilogistics.com"
-        }
+        # list_of_users = {
+        #     "bednchr": "cbednarski@omnilogistics.com",
+        #     "browaus": "abrown@omnilogistics.com",
+        #     "casajak": "jcasati@omnilogistics.com",
+        #     "cruzale": "alcruz@omnilogistics.com",
+        #     "elizmau": "melizalde@omnilogistics.com",
+        #     "hodgbri": "bhodge@omnilogistics.com",
+        #     "pilczac": "zpilcher@omnilogistics.com",
+        #     "ruizrob": "rruiz@omnilogistics.com",
+        #     "schmric": "rschmidt@omnilogistics.com"
+        # }
+        #get all users from dynamodb
+        list_of_users = get_all_users()
 
         #determine timestamps
         now = datetime.datetime.utcnow()
@@ -43,7 +46,7 @@ def handler(event, context):
         week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
         week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
-        for user_id, email in list_of_users.items():
+        for user_id, email in list_of_users():
             response = searchMovementByUser(user_id)
             
             if ( response.status_code < 200 and response.status_code >= 300 ):
