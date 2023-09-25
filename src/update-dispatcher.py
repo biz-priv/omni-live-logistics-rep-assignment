@@ -2,6 +2,7 @@ import datetime
 import requests
 import os
 import sys
+import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
@@ -11,7 +12,8 @@ from shared.api import searchParadeLoads, getMovementById, updateMovement
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 
 def handler(event, context):
-    find_parade_loads()
+    users = scan_users()
+    print(users)
     return "Function ran successfully"
 
 def find_parade_loads():
@@ -48,9 +50,15 @@ def update_dispatcher(movement_id, new_user):
     
 def scan_users():
     users = []
-    table = dynamodb.Table(os.environ('USER_METRICS_TABLE'))
+    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
     scan_kwargs = {
-        'FilterExpression': Attr('qualified').eq('true')
+        'FilterExpression': "#qualified = :qualified",
+        'ExpressionAttributeValues': {
+            ':qualified' : "true" 
+        },
+        'ExpressionAttributeNames': {
+            '#qualified' : 'qualified'
+        }
     }
     try:
         done = False

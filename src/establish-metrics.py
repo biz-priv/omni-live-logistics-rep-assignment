@@ -53,7 +53,7 @@ def handler(event, context):
                 "track_counter": 0,
                 "ontime_counter": 0,
                 "movements": [],
-                "qualified": False
+                "qualified": "false"
             }
             data.append(userData)
             
@@ -97,7 +97,7 @@ def handler(event, context):
                     pass
 
                 if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
-                    userData["qualified"]=True
+                    userData["qualified"]="true"
         
         print(data)
 
