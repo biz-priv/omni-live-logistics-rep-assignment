@@ -5,6 +5,7 @@ function:
   package:
     patterns:
       - "!**/*"
+      - "src/shared/**"
       - "src/update-dispatcher.py"
   runtime: python3.7
   layers:
