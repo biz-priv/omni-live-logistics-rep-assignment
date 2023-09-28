@@ -1,18 +1,22 @@
 import os
 import sys
+from datetime import datetime
 import boto3
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.api import searchParadeLoads, getMovementById, updateMovement
-from shared.user import get_qualified_users
+from shared.user import get_qualified_users, query_users_for_weekday
 
 ses = boto3.client('ses', region_name='us-east-1')
 
 def handler(event, context):
-    users = get_qualified_users()
+    dt = datetime.now()
+    weekday = dt.strftime('%A')
+    print('weekday is:', weekday)
+    users = query_users_for_weekday(weekday)
     print(users)
-    find_parade_loads(users)
+    # find_parade_loads(users)
     return "Function ran successfully"
 
 def find_parade_loads(users):

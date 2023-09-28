@@ -50,3 +50,32 @@ def get_qualified_users():
         raise
 
     return users
+
+
+def query_users_for_weekday(weekday):
+    users = []
+    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
+    scan_kwargs = {
+        'FilterExpression': "contains(#days, :weekday)",
+        'ExpressionAttributeValues': {
+            ':weekday' : weekday
+        },
+        'ExpressionAttributeNames': {
+            '#days' : 'days'
+        }
+    }
+    try:
+        done = False
+        start_key = None
+        while not done:
+            if start_key:
+                scan_kwargs['ExclusiveStartKey'] = start_key
+            response = table.scan(**scan_kwargs)
+            users.extend(response.get('Items', []))
+            start_key = response.get('LastEvaluatedKey', None)
+            done = start_key is None
+    except Exception as err:
+        print("Exception in scaning users")
+        raise
+
+    return users

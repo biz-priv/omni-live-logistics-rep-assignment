@@ -18,17 +18,6 @@ ses = boto3.client('ses', region_name='us-east-1')
 def handler(event, context):
 
     try:
-        # list_of_users = {
-        #     "bednchr": "cbednarski@omnilogistics.com",
-        #     "browaus": "abrown@omnilogistics.com",
-        #     "casajak": "jcasati@omnilogistics.com",
-        #     "cruzale": "alcruz@omnilogistics.com",
-        #     "elizmau": "melizalde@omnilogistics.com",
-        #     "hodgbri": "bhodge@omnilogistics.com",
-        #     "pilczac": "zpilcher@omnilogistics.com",
-        #     "ruizrob": "rruiz@omnilogistics.com",
-        #     "schmric": "rschmidt@omnilogistics.com"
-        # }
         #get all users from dynamodb
         list_of_users = get_all_users()
 
