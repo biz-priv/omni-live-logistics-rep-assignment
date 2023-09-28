@@ -1,0 +1,18 @@
+function:
+  name: omni-live-logistics-establish-metrics-${self:provider.stage}
+  handler: src/establish-metrics.handler
+  description: omni live logistics establish metrics
+  package:
+    patterns:
+      - "!**/*"
+      - "src/shared/**"
+      - "src/establish-metrics.py"
+  runtime: python3.7
+  layers:
+    - { Ref: OmniLiveLogisticsLambdaLayer }
+  timeout: 600
+  environment:
+    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
+    API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
+    API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}
