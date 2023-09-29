@@ -33,15 +33,15 @@ def find_parade_loads(users):
                 print('There are multiple loads')
                 for move in range(len(output)):
                     print(f"User Id - {users[index]['user_id']}")
-                    # update_dispatcher(output[move]['id'], users[index]["user_id"])
-                    # sendMailToUser( [users[index]["email"]], [users[index]["manager_email"]] , output[move]['id'] )
+                    update_dispatcher(output[move]['id'], users[index]["user_id"])
+                    sendMailToUser( [users[index]["email"]], [users[index]["manager_email"]] , output[move]['id'] )
                     update_last_used_timestamp(users[index])
                     index = index+1
             else:
                 print('There is one load')
                 print(f"User Id - {users[index]['user_id']}")
-                # update_dispatcher(output['id'], users[index]["user_id"])
-                # sendMailToUser([users[index]["email"]], [users[index]["manager_email"]], output['id'] )
+                update_dispatcher(output['id'], users[index]["user_id"])
+                sendMailToUser([users[index]["email"]], [users[index]["manager_email"]], output['id'] )
                 update_last_used_timestamp(users[index])
                 index = index+1
     except Exception as error:
@@ -74,9 +74,8 @@ def sendMailToUser( emails, ccemails,  moveId ):
 
     ses.send_email(
         Destination={
-            'ToAddresses': ["abhishek@bizcloudexperts.com"],
-            # 'ToAddresses': emails,
-            # 'CcAddresses': ccemails
+            'ToAddresses': emails,
+            'CcAddresses': ccemails
         },
         Message={
             'Body': {
