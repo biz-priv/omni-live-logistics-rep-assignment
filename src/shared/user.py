@@ -1,7 +1,7 @@
 
 import os
 import boto3
-import datetime
+from datetime import datetime
 from boto3.dynamodb.types import TypeSerializer
 
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
