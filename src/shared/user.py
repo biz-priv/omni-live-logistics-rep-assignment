@@ -1,7 +1,10 @@
 
 import os
 import boto3
+import datetime
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+
+from dynamo import put_item
 
 def get_all_users():
     users = []
@@ -62,7 +65,7 @@ def query_users_for_weekday(weekday):
         },
         'ExpressionAttributeNames': {
             '#days' : 'days'
-        }
+        },
     }
     try:
         done = False
@@ -79,3 +82,12 @@ def query_users_for_weekday(weekday):
         raise
 
     return users
+
+def update_last_used_timestamp(user):
+    user["last_used"] = datetime.datetime.now()
+    put_item(os.environ['USER_METRICS_TABLE'], user)
+
+
+def sort_users_by_last_used(users):
+    sorted_users = sorted(users, key=lambda user: (not user.get("last_used", ""), user.get("last_used", "")))
+    return sorted_users
