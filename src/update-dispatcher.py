@@ -74,8 +74,9 @@ def sendMailToUser( emails, ccemails,  moveId ):
 
     ses.send_email(
         Destination={
-            'ToAddresses': emails,
-            'CcAddresses': ccemails
+            'ToAddresses': ["abhishek@bizcloudexperts.com"],
+            # 'ToAddresses': emails,
+            # 'CcAddresses': ccemails
         },
         Message={
             'Body': {
