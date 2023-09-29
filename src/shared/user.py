@@ -84,16 +84,17 @@ def query_users_for_weekday(weekday):
 
     return users
 
-def update_last_used_timestamp(users):
+def update_last_used_timestamp(user):
+    user["last_used"] = datetime.datetime.now().isoformat()
+    serializer = TypeSerializer()
+    dyn_item = {key: serializer.serialize(value) for key, value in user.items()}
+    dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=dyn_item)
+
+def sort_users_by_last_used(users):
     def custom_sort_key(user):
         last_used = user.get("last_used")
         if not last_used:
             return (0, datetime.min)
         return (1, datetime.fromisoformat(last_used))
     sorted_users = sorted(users, key=custom_sort_key)
-    return sorted_users
-
-
-def sort_users_by_last_used(users):
-    sorted_users = sorted(users, key=lambda user: (not user.get("last_used", ""), user.get("last_used", "")))
     return sorted_users
