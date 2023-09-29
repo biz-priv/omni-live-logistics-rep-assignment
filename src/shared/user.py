@@ -85,7 +85,7 @@ def query_users_for_weekday(weekday):
     return users
 
 def update_last_used_timestamp(user):
-    user["last_used"] = datetime.datetime.now().isoformat()
+    user["last_used"] = datetime.now().isoformat()
     serializer = TypeSerializer()
     dyn_item = {key: serializer.serialize(value) for key, value in user.items()}
     dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=dyn_item)
