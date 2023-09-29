@@ -88,7 +88,7 @@ def update_last_used_timestamp(user):
     user["last_used"] = datetime.datetime.now().isoformat()
     serializer = TypeSerializer()
     dyn_item = {key: serializer.serialize(value) for key, value in user.items()}
-    dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=user)
+    dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=dyn_item)
 
 
 def sort_users_by_last_used(users):
