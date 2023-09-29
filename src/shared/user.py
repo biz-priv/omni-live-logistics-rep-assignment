@@ -3,6 +3,7 @@ import os
 import boto3
 import datetime
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+dynamodb_client = boto3.client('dynamodb', region_name='us-east-1')
 
 def get_all_users():
     users = []
@@ -83,7 +84,7 @@ def query_users_for_weekday(weekday):
 
 def update_last_used_timestamp(user):
     user["last_used"] = datetime.datetime.now()
-    dynamodb.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=user)
+    dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=user)
 
 
 def sort_users_by_last_used(users):
