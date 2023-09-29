@@ -2,6 +2,8 @@
 import os
 import boto3
 import datetime
+from boto3.dynamodb.types import TypeSerializer
+
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 dynamodb_client = boto3.client('dynamodb', region_name='us-east-1')
 
@@ -84,6 +86,8 @@ def query_users_for_weekday(weekday):
 
 def update_last_used_timestamp(user):
     user["last_used"] = datetime.datetime.now()
+    serializer = TypeSerializer()
+    dyn_item = {key: serializer.serialize(value) for key, value in user.items()}
     dynamodb_client.put_item(TableName=os.environ['USER_METRICS_TABLE'], Item=user)
 
 
