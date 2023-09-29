@@ -17,8 +17,8 @@ def handler(event, context):
     print('weekday is:', weekday)
     users = query_users_for_weekday(weekday)
     sorted_users = sort_users_by_last_used(users)
-    print(users)
-    find_parade_loads(users)
+    print(sorted_users)
+    find_parade_loads(sorted_users)
     return "Function ran successfully"
 
 def find_parade_loads(users):
