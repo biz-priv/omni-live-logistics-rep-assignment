@@ -85,8 +85,8 @@ def sendMailToUser( emails, ccemails,  moveId ):
                 }
             },
             'Subject': {
-                'Data': f"Test",
-                # 'Data': f"Assigned Parade Order {moveId}",
+                # 'Data': f"Test",
+                'Data': f"Assigned Parade Order {moveId}",
                 'Charset': "UTF-8",
             },
         },
