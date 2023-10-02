@@ -1,18 +1,24 @@
 import os
 import sys
+from datetime import datetime
 import boto3
 
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.api import searchParadeLoads, getMovementById, updateMovement
-from shared.user import get_qualified_users
+from shared.user import get_qualified_users, query_users_for_weekday, update_last_used_timestamp, sort_users_by_last_used
+# from shared.dynamo import put_item
 
 ses = boto3.client('ses', region_name='us-east-1')
 
 def handler(event, context):
-    users = get_qualified_users()
-    print(users)
-    find_parade_loads(users)
+    dt = datetime.now()
+    weekday = dt.strftime('%A')
+    print('weekday is:', weekday)
+    users = query_users_for_weekday(weekday)
+    sorted_users = sort_users_by_last_used(users)
+    print(sorted_users)
+    find_parade_loads(sorted_users)
     return "Function ran successfully"
 
 def find_parade_loads(users):
@@ -26,18 +32,21 @@ def find_parade_loads(users):
             if isinstance(output, list):
                 print('There are multiple loads')
                 for move in range(len(output)):
+                    print(f"User Id - {users[index]['user_id']}")
                     update_dispatcher(output[move]['id'], users[index]["user_id"])
-                    sendMailToUser( users[index]["user_id"], output[move]['id'] )
+                    sendMailToUser( [users[index]["email"]], [users[index]["manager_email"]] , output[move]['id'] )
+                    update_last_used_timestamp(users[index])
                     index = index+1
             else:
                 print('There is one load')
+                print(f"User Id - {users[index]['user_id']}")
                 update_dispatcher(output['id'], users[index]["user_id"])
-                sendMailToUser(users[index]["user_id"], output['id'] )
+                sendMailToUser([users[index]["email"]], [users[index]["manager_email"]], output['id'] )
+                update_last_used_timestamp(users[index])
                 index = index+1
     except Exception as error:
         print(error)
         return "Error - update_dispatcher"
-
 
 def update_dispatcher(movement_id, new_user):
     try:
@@ -55,7 +64,7 @@ def update_dispatcher(movement_id, new_user):
         print(error)
         raise
 
-def sendMailToUser( email, moveId ):
+def sendMailToUser( emails, ccemails,  moveId ):
 
     with open(os.getcwd() + '/src/shared/res/assignment_notification.html', 'r', encoding='utf-8') as file:
     # Read the contents of the file into a string
@@ -63,11 +72,10 @@ def sendMailToUser( email, moveId ):
 
     html_string = html_string.replace("{{ order_id }}", moveId)
 
-    response = ses.send_email(
+    ses.send_email(
         Destination={
-            'ToAddresses': [
-                email
-            ],
+            'ToAddresses': emails,
+            'CcAddresses': ccemails
         },
         Message={
             'Body': {
@@ -77,6 +85,7 @@ def sendMailToUser( email, moveId ):
                 }
             },
             'Subject': {
+                # 'Data': f"Test",
                 'Data': f"Assigned Parade Order {moveId}",
                 'Charset': "UTF-8",
             },

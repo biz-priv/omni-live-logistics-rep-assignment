@@ -11,6 +11,8 @@ function:
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
   timeout: 600
+  events:
+    - schedule: rate(24 hours)
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
