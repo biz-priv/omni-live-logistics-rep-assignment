@@ -42,15 +42,13 @@ def handler(event, context):
                 print(f"Error encountered in searchMovementByUser, user_id - {user['user_id']}, response - {response.json()}")
                 continue
 
-            userData = {
-                "user_id" : user["user_id"],
-                "email" : user["email"],
-                "load_counter": 0,
-                "track_counter": 0,
-                "ontime_counter": 0,
-                "movements": [],
-                "qualified": "false"
-            }
+            userData = user.copy()
+            userData["load_counter"] = 0
+            userData["track_counter"] = 0
+            userData["ontime_counter"] = 0
+            userData["movements"] = []
+            userData["qualified"] = "false"
+            
             data.append(userData)
             
             output = response.json()
