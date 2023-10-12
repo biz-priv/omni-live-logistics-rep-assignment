@@ -6,16 +6,13 @@ import boto3
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.api import searchParadeLoads, getMovementById, updateMovement
-from shared.user import get_qualified_users, query_users_for_weekday, update_last_used_timestamp, sort_users_by_last_used
+from shared.user import get_qualified_users, update_last_used_timestamp, sort_users_by_last_used
 # from shared.dynamo import put_item
 
 ses = boto3.client('ses', region_name='us-east-1')
 def handler(event, context):
     try:
-        dt = datetime.now()
-        weekday = dt.strftime('%A')
-        print('weekday is:', weekday)
-        users = query_users_for_weekday(weekday)
+        users=get_qualified_users()
         sorted_users = sort_users_by_last_used(users)
         print(sorted_users)
         find_parade_loads(sorted_users)
