@@ -12,13 +12,19 @@ from shared.user import get_qualified_users, update_last_used_timestamp, sort_us
 ses = boto3.client('ses', region_name='us-east-1')
 def handler(event, context):
     try:
-        users=get_qualified_users()
-        sorted_users = sort_users_by_last_used(users)
-        print(sorted_users)
-        find_parade_loads(sorted_users)
-        return "Function ran successfully"
+        dt = datetime.now()
+        weekday = dt.strftime('%A')
+        if weekday not in ['Saturday', 'Sunday']:
+            print(" It's a weekday.",weekday)
+            users=get_qualified_users()
+            sorted_users = sort_users_by_last_used(users)
+            print(sorted_users)
+            find_parade_loads(sorted_users)
+            return "Function ran successfully"
+        else:
+            print("It's weekend",weekday)
     except Exception as error:
-        Info=f"The Lambda Function failed with error - {error}"
+        Info=f"The Lambda Function update-dispatcher failed with error - {error}"
         response = ses.send_email(
             Source="noreply@omnilogistics.com",
             Destination={
@@ -31,13 +37,13 @@ def handler(event, context):
                     }
                 },
                 'Subject': {
-                    'Data': "Lamba Failed",
+                    'Data': f"The Lambda Function update-dispatcher failed with error - {error} \n This Lambda is part of omni-rep-assignment",
                     'Charset': "UTF-8"
                 },
             },
         )
         print("Error - ",error)
-        raise
+        raise Exception(f"{error}")
 
 def find_parade_loads(users):
     try:
@@ -65,7 +71,7 @@ def find_parade_loads(users):
     except Exception as error:
         print("Error - ",error)
         #return "Error - update_dispatcher"
-        raise
+        raise 
 
 def update_dispatcher(movement_id, new_user):
     try:
@@ -81,7 +87,7 @@ def update_dispatcher(movement_id, new_user):
     except Exception as error:
         print(f"Error in updating dispatcher, movement_id - {movement_id}, new_user - {new_user}")
         print(error)
-        raise
+        raise 
 
 def sendMailToUser( emails, ccemails,  moveId ):
 
