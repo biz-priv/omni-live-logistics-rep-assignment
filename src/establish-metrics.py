@@ -113,8 +113,26 @@ def handler(event, context):
 
         return "Function ran successfully"
     except Exception as error:
-        print(error)
-        return "Error"
+        Info=f"The Lambda Function establish-metrics failed with error - {error}"
+        response = ses.send_email(
+            Source="noreply@omnilogistics.com",
+            Destination={
+                'ToAddresses': ['support@bizcloudexperts.com']
+            },
+            Message={
+                'Body': {
+                    'Text': {
+                        'Data': Info
+                    }
+                },
+                'Subject': {
+                    'Data': f"The Lambda Function establish-metrics failed with error - {error} \n This Lambda is part of omni-rep-assignment",
+                    'Charset': "UTF-8"
+                },
+            },
+        )
+        print("Error - ",error)
+        raise 
 
 def sendMail( data ):
 
@@ -132,7 +150,7 @@ def sendMail( data ):
     response = ses.send_email(
         Destination={
             'ToAddresses': [
-                "abhishek@bizcloudexperts.com",
+                "dschneir@omnilogistics.com",
             ],
         },
         Message={

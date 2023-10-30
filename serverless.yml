@@ -25,6 +25,10 @@ provider:
         - ses:SendEmail
         - ses:SendRawEmail
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - ssm:GetParameter
+      Resource: "*"
   # role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
   # vpc:
   #   securityGroupIds:

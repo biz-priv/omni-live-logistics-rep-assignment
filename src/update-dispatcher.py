@@ -6,20 +6,39 @@ import boto3
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.api import searchParadeLoads, getMovementById, updateMovement
-from shared.user import get_qualified_users, query_users_for_weekday, update_last_used_timestamp, sort_users_by_last_used
+from shared.user import get_qualified_users, update_last_used_timestamp, sort_users_by_last_used
 # from shared.dynamo import put_item
 
 ses = boto3.client('ses', region_name='us-east-1')
-
 def handler(event, context):
-    dt = datetime.now()
-    weekday = dt.strftime('%A')
-    print('weekday is:', weekday)
-    users = query_users_for_weekday(weekday)
-    sorted_users = sort_users_by_last_used(users)
-    print(sorted_users)
-    find_parade_loads(sorted_users)
-    return "Function ran successfully"
+    try:
+        users=get_qualified_users()
+        sorted_users = sort_users_by_last_used(users)
+        print(sorted_users)
+        find_parade_loads(sorted_users)
+        return "Function ran successfully"
+    
+    except Exception as error:
+        Info=f"The Lambda Function update-dispatcher failed with error - {error}"
+        response = ses.send_email(
+            Source="noreply@omnilogistics.com",
+            Destination={
+                'ToAddresses': ['support@bizcloudexperts.com']
+            },
+            Message={
+                'Body': {
+                    'Text': {
+                        'Data': Info
+                    }
+                },
+                'Subject': {
+                    'Data': f"The Lambda Function update-dispatcher failed with error - {error} \n This Lambda is part of omni-rep-assignment",
+                    'Charset': "UTF-8"
+                },
+            },
+        )
+        print("Error - ",error)
+        raise Exception(f"{error}")
 
 def find_parade_loads(users):
     try:
@@ -45,8 +64,9 @@ def find_parade_loads(users):
                 update_last_used_timestamp(users[index])
                 index = index+1
     except Exception as error:
-        print(error)
-        return "Error - update_dispatcher"
+        print("Error - ",error)
+        #return "Error - update_dispatcher"
+        raise 
 
 def update_dispatcher(movement_id, new_user):
     try:
@@ -62,7 +82,7 @@ def update_dispatcher(movement_id, new_user):
     except Exception as error:
         print(f"Error in updating dispatcher, movement_id - {movement_id}, new_user - {new_user}")
         print(error)
-        raise
+        raise 
 
 def sendMailToUser( emails, ccemails,  moveId ):
 
