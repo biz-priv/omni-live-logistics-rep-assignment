@@ -11,14 +11,7 @@ function:
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
   events:
-    - schedule: rate(5 minutes)
-      input:
-        condition:
-          variable: "new Date().getDay()"
-          operator: "not in"
-          values:
-            - "0"  # Sunday
-            - "6"  # Saturday
+    - schedule: cron(0/5 8 ? * MON-FRI *)
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
