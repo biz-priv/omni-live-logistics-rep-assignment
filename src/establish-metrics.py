@@ -150,7 +150,7 @@ def sendMail( data ):
     response = ses.send_email(
         Destination={
             'ToAddresses': [
-                "dschneir@omnilogistics.com",
+                "raviteja.kalluri@bizcloudexperts.com",
             ],
         },
         Message={
