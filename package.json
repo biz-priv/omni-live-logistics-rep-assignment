@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "serverless": "^2.72.3",
+    "serverless": "^2.72.4",
     "serverless-python-requirements": "^6.0.0"
   },
   "scripts": {
