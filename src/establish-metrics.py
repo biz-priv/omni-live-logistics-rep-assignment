@@ -32,7 +32,7 @@ def handler(event, context):
 
         data = []
 
-        week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
+        week_ago = datetime.datetime.today() - datetime.timedelta(days=14)
         week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
         for user in list_of_users:
@@ -151,6 +151,7 @@ def sendMail( data ):
         Destination={
             'ToAddresses': [
                 "dschneir@omnilogistics.com",
+                "carriersales@omnilogistics.com"
             ],
         },
         Message={

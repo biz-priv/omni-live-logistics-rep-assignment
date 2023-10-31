@@ -9,7 +9,7 @@ mcleod_headers = {'Accept': 'application/json',
 
 def searchMovementByUser(user_id):
     try:
-        url = f"{base_url}/api/movements/search?movement.dispatcher_user_id={user_id}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=50"
+        url = f"{base_url}/api/movements/search?movement.dispatcher_user_id={user_id}&status=D&orderBy=destination.actual_arrival+DESC&recordLength=300"
         response = requests.get(url, auth=(username, password), headers=mcleod_headers)
         return response
     except Exception as error:
