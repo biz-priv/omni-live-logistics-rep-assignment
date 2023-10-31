@@ -1,0 +1,19 @@
+function:
+  name: omni-live-logistics-update-dispatcher-${self:provider.stage}
+  handler: src/update-dispatcher.handler
+  description: omni live logistics update dispatcher
+  package:
+    patterns:
+      - "!**/*"
+      - "src/shared/**"
+      - "src/update-dispatcher.py"
+  runtime: python3.7
+  layers:
+    - { Ref: OmniLiveLogisticsLambdaLayer }
+  events:
+    - schedule: cron(0/5 8 ? * MON-FRI *)
+  environment:
+    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
+    API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
+    API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}

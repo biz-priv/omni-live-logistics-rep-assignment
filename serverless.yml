@@ -1,0 +1,59 @@
+service: omni-live-logistics-rep-assignment
+
+plugins:
+  - serverless-python-requirements
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  deploymentBucket: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - ses:SendEmail
+        - ses:SendRawEmail
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - ssm:GetParameter
+      Resource: "*"
+  # role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
+  # vpc:
+  #   securityGroupIds:
+  #     - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
+  #   subnetIds:
+  #     - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
+
+package:
+  individually: true
+
+layers:
+  OmniLiveLogistics:
+    path: lambdaLayer/lib/python3.7
+    compatibleRuntimes:
+      - python3.7
+    description: "Dependencies jsonpath_rw for python functions"
+
+functions:
+  omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
+  omni_live_update-dispatcher_metrics: ${file(config/functions/update-dispatcher.yml):function}
+
+resources:
+  Resources:
+    UserMetricTable: ${file(config/dynamodb/user-metric-table.yml):UserMetricTable}
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
