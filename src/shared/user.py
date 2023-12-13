@@ -7,6 +7,67 @@ from boto3.dynamodb.types import TypeSerializer
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 dynamodb_client = boto3.client('dynamodb', region_name='us-east-1')
 
+def update_toggle_for_user(user_id, inOffice):
+    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
+
+    try:
+        # Update the DynamoDB item
+        table.update_item(
+            Key={
+                'user_id': user_id
+            },
+            UpdateExpression='SET inOffice = :inOffice',
+            ExpressionAttributeValues={
+                ':inOffice': inOffice
+            }
+        )
+
+        print(f"Toggle updated for user {user_id}. New toggle value: {inOffice}")
+
+    except Exception as err:
+        print(f"Exception in updating toggle for user {user_id}: {err}")
+        raise
+
+def update_office_status():
+    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
+
+    try:
+        response = table.scan(
+            ProjectionExpression='user_id, days, inOffice'
+        )
+        items = response.get('Items', [])
+        for item in items:
+            print("item",item)
+            user_id = item.get('user_id')
+            # inOffice_value = item.get('inOffice')
+            working_days = item.get('days', [])
+                # Check if today is a working day
+            today = datetime.now().strftime('%A')
+            is_working_day = today in working_days
+
+            # Update inOffice based on the working days
+            if is_working_day:
+                new_inOffice_value = 'yes'
+            else:
+                new_inOffice_value = 'no'
+
+            # Update the DynamoDB item
+            table.update_item(
+                Key={
+                    'user_id': user_id
+                },
+                UpdateExpression='SET inOffice = :new_inOffice',
+                ExpressionAttributeValues={
+                    ':new_inOffice': new_inOffice_value
+                }
+            )
+
+            print(f"inOffice updated for user {user_id}. New inOffice value: {new_inOffice_value}")
+
+    except Exception as err:
+        print(f"Exception in updating inOffice for working users: {err}")
+        raise
+
 def get_all_users():
     users = []
     table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
@@ -31,12 +92,14 @@ def get_qualified_users():
     users = []
     table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
     scan_kwargs = {
-        'FilterExpression': "#qualified = :qualified",
+        'FilterExpression': "#qualified = :qualified AND #inOffice = :inOffice",
         'ExpressionAttributeValues': {
-            ':qualified' : "true" 
+            ':qualified': "true",
+            ':inOffice': "yes"  # Adjust based on the actual values in your 'inOffice' column
         },
         'ExpressionAttributeNames': {
-            '#qualified' : 'qualified'
+            '#qualified': 'qualified',
+            '#inOffice': 'inOffice'
         }
     }
     try:
