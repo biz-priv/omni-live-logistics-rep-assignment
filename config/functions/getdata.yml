@@ -17,23 +17,9 @@ function:
     - http:
         path: /getdat
         method: GET
-        private: true
+        private: false
         integration: lambda
-        response:
-          headers: ${self:custom.standardResponseHeaders}
-          statusCodes:
-            200:
-              pattern: ""
-            400:
-              pattern: '[\s\S]*\[400\][\s\S]*'
-              headers:
-                Content-Type: "'application/json'"
-              template: ${file(responseTemplate.vtl)}
-            500:
-              pattern: '[\s\S]*\[500\][\s\S]*'
-              headers:
-                Content-Type: "'application/json'"
-              template: ${file(responseTemplate.vtl)}
+        cors: true
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
