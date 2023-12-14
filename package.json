@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "devDependencies": {
-    "serverless-python-requirements": "^6.0.1"
     "serverless": "^2.72.4",
+    "serverless-python-requirements": "^6.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
