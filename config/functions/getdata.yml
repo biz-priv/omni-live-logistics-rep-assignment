@@ -1,0 +1,41 @@
+function:
+  name: omni-live-logistics-getdata-${self:provider.stage}
+  handler: src/getdata.handler
+  description: omni live logistics getdata
+  package:
+    patterns:
+      - "!**/*"
+      - "src/shared/**"
+      - "src/getdata.py"
+  runtime: python3.7
+  layers:
+    - { Ref: OmniLiveLogisticsLambdaLayer }
+  timeout: 600
+  # events:
+  #   - schedule: cron(0 8 ? * MON-FRI *)
+  events:
+    - http:
+        path: /getdat
+        method: GET
+        private: true
+        integration: lambda
+        response:
+          headers: ${self:custom.standardResponseHeaders}
+          statusCodes:
+            200:
+              pattern: ""
+            400:
+              pattern: '[\s\S]*\[400\][\s\S]*'
+              headers:
+                Content-Type: "'application/json'"
+              template: ${file(responseTemplate.vtl)}
+            500:
+              pattern: '[\s\S]*\[500\][\s\S]*'
+              headers:
+                Content-Type: "'application/json'"
+              template: ${file(responseTemplate.vtl)}
+  environment:
+    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
+    API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
+    API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}

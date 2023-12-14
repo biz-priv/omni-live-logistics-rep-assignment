@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.dynamo import put_item
 from shared.api import searchMovementByUser, callins
-from shared.user import get_all_users
+from shared.user import get_all_users,update_office_status
 
 import boto3
 from boto3.dynamodb.types import TypeSerializer
@@ -20,7 +20,8 @@ def handler(event, context):
     try:
         #get all users from dynamodb
         list_of_users = get_all_users()
-
+        update_office_status()
+        
         #determine timestamps
         now = datetime.datetime.utcnow()
         yesterday = now - datetime.timedelta(days = 1)

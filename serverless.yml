@@ -49,6 +49,8 @@ layers:
 functions:
   omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
   omni_live_update-dispatcher_metrics: ${file(config/functions/update-dispatcher.yml):function}
+  omni_live_logistics_toggle: ${file(config/functions/toggle.yml):function}
+  omni_live_logistics_getdata: ${file(config/functions/getdata.yml):function}
 
 resources:
   Resources:
