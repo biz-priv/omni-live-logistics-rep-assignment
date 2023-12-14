@@ -21,7 +21,6 @@ def handler(event, context):
         #get all users from dynamodb
         list_of_users = get_all_users()
         update_office_status()
-        return
         
         #determine timestamps
         now = datetime.datetime.utcnow()
