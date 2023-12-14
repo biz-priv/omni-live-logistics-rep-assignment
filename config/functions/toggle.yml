@@ -25,3 +25,4 @@ function:
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
     API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
     API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}
+    
