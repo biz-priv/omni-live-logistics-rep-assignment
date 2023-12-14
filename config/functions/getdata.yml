@@ -1,12 +1,12 @@
 function:
-  name: omni-live-logistics-toggle-${self:provider.stage}
-  handler: src/toggle.handler
-  description: omni live logistics update toggle
+  name: omni-live-logistics-getdata-${self:provider.stage}
+  handler: src/getdata.handler
+  description: omni live logistics getdata
   package:
     patterns:
       - "!**/*"
       - "src/shared/**"
-      - "src/toggle.py"
+      - "src/getdata.py"
   runtime: python3.7
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
@@ -15,8 +15,8 @@ function:
   #   - schedule: cron(0 8 ? * MON-FRI *)
   events:
     - http:
-        path: /toggle
-        method: POST
+        path: /getdat
+        method: GET
         private: true
         integration: lambda
         response:

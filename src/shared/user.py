@@ -7,6 +7,26 @@ from boto3.dynamodb.types import TypeSerializer
 dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 dynamodb_client = boto3.client('dynamodb', region_name='us-east-1')
 
+def getdata():
+    table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
+
+    try:
+        # Scan the DynamoDB table to retrieve all items
+        response = table.scan()
+
+        # Check if there are items
+        items = response.get('Items', [])
+        if items:
+            return items
+        else:
+            print("No data found in the table")
+            return None
+
+    except Exception as err:
+        print(f"Exception in getting data: {err}")
+        raise
+
+
 def update_toggle_for_user(user_id, inOffice):
     table = dynamodb.Table(os.environ['USER_METRICS_TABLE'])
 
@@ -23,6 +43,7 @@ def update_toggle_for_user(user_id, inOffice):
         )
 
         print(f"Toggle updated for user {user_id}. New toggle value: {inOffice}")
+        return True
 
     except Exception as err:
         print(f"Exception in updating toggle for user {user_id}: {err}")
