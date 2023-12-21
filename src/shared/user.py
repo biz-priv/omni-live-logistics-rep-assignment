@@ -17,6 +17,9 @@ def getdata():
         # Check if there are items
         items = response.get('Items', [])
         if items:
+            for item in items:
+                item['tracking']=(item['track_counter']/item['load_counter'])*100
+                item['ontime']=(item['ontime_counter']/item['load_counter'])*100
             return items
         else:
             print("No data found in the table")
