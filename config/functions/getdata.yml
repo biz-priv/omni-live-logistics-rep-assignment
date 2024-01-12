@@ -32,7 +32,6 @@ function:
             - X-Amz-User-Agent
             - X-Customer-Id
             - X-Api-Key
-          allowCredentials: true
         authorizer:
             arn: arn:aws:cognito-idp:us-east-1:332281781429:userpool/us-east-1_nH3rxLIdf
         
