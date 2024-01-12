@@ -15,7 +15,7 @@ function:
   #   - schedule: cron(0 8 ? * MON-FRI *)
   events:
     - http:
-        path: /getdat
+        path: /getdata
         method: GET
         integration: lambda
         authorizer:
