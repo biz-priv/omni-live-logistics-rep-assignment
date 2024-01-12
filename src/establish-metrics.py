@@ -98,7 +98,8 @@ def handler(event, context):
 
                 if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
                     userData["qualified"]="true"
-        
+                else:
+                    userData['qualified']="false"        
 
         serializer = TypeSerializer()
 
