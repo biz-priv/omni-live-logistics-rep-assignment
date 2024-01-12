@@ -17,7 +17,8 @@ function:
     - http:
         path: /toggle
         method: POST
-        private: true
+        authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:332281781429:userpool/us-east-1_nH3rxLIdf
         integration: lambda
         response:
           headers: ${self:custom.standardResponseHeaders}

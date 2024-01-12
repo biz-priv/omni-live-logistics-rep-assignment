@@ -17,8 +17,9 @@ function:
     - http:
         path: /getdat
         method: GET
-        private: true
         integration: lambda
+        authorizer:
+            arn: arn:aws:cognito-idp:us-east-1:332281781429:userpool/us-east-1_nH3rxLIdf
         response:
           headers: ${self:custom.standardResponseHeaders}
           statusCodes:

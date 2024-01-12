@@ -17,7 +17,15 @@ def getdata():
         # Check if there are items
         items = response.get('Items', [])
         if items:
-            return items
+            for item in items:
+                del item['movements']
+                del item['days']
+                item['tracking']=int((item['track_counter']/item['load_counter'])*100)
+                item['ontime']=int((item['ontime_counter']/item['load_counter'])*100)
+                del item['email']
+                del item['manager_email']
+                item["check"]= True if( (int((item['track_counter']/item['load_counter'])*100))>80 and  (int((item['ontime_counter']/item['load_counter'])*100))>90) else False
+            return(items)
         else:
             print("No data found in the table")
             return None
