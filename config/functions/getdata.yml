@@ -33,7 +33,7 @@ function:
             - X-Customer-Id
             - X-Api-Key
         authorizer:
-            arn: arn:aws:cognito-idp:us-east-1:332281781429:userpool/us-east-1_nH3rxLIdf
+            arn: ${ssm:/omni-rep-assignment/userpool}
         
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
