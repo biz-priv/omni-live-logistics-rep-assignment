@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 from shared.dynamo import put_item
 from shared.api import searchMovementByUser, callins
-from shared.user import get_all_users
+from shared.user import get_all_users,update_office_status
 
 import boto3
 from boto3.dynamodb.types import TypeSerializer
@@ -20,7 +20,8 @@ def handler(event, context):
     try:
         #get all users from dynamodb
         list_of_users = get_all_users()
-
+        update_office_status()
+        
         #determine timestamps
         now = datetime.datetime.utcnow()
         yesterday = now - datetime.timedelta(days = 1)
@@ -32,7 +33,7 @@ def handler(event, context):
 
         data = []
 
-        week_ago = datetime.datetime.today() - datetime.timedelta(days=7)
+        week_ago = datetime.datetime.today() - datetime.timedelta(days=14)
         week_ago = week_ago.replace(tzinfo=dateutil.tz.gettz('US/Central'))
 
         for user in list_of_users:
@@ -97,7 +98,8 @@ def handler(event, context):
 
                 if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
                     userData["qualified"]="true"
-        
+                else:
+                    userData['qualified']="false"        
 
         serializer = TypeSerializer()
 
@@ -126,7 +128,7 @@ def handler(event, context):
                     }
                 },
                 'Subject': {
-                    'Data': f"The Lambda Function establish-metrics failed with error - {error} \n This Lambda is part of omni-rep-assignment",
+                    'Data': f"OMNI - Rep-Assignment \n The Lambda Function update-dispatcher failed with error - {error}",
                     'Charset': "UTF-8"
                 },
             },
@@ -151,6 +153,7 @@ def sendMail( data ):
         Destination={
             'ToAddresses': [
                 "dschneir@omnilogistics.com",
+                "carriersales@omnilogistics.com"
             ],
         },
         Message={

@@ -32,7 +32,7 @@ def handler(event, context):
                     }
                 },
                 'Subject': {
-                    'Data': f"The Lambda Function update-dispatcher failed with error - {error} \n This Lambda is part of omni-rep-assignment",
+                    'Data': f"OMNI - Rep-Assignment \n The Lambda Function update-dispatcher failed with error - {error}",
                     'Charset': "UTF-8"
                 },
             },
