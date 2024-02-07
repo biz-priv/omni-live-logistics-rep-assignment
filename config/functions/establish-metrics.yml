@@ -12,7 +12,9 @@ function:
     - { Ref: OmniLiveLogisticsLambdaLayer }
   timeout: 600
   events:
-    - schedule: cron(0 12 ? * MON-FRI *)
+    - schedule: 
+        rate: cron(0 12 ? * * *)
+        enabled: false
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
