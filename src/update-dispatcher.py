@@ -15,6 +15,7 @@ def handler(event, context):
         users=get_qualified_users()
         sorted_users = sort_users_by_last_used(users)
         print(sorted_users)
+        # return sorted_users
         find_parade_loads(sorted_users)
         return "Function ran successfully"
     

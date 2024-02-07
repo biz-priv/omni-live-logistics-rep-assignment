@@ -72,7 +72,7 @@ def handler(event, context):
                     userData["movements"].append(output[move]['id'])
 
                     #use data previously gathered to determine if the load was delivered ontime
-                    if actual_arrival <= appt_time:
+                    if actual_arrival <= appt_time+ datetime.timedelta(minutes=60):
                         userData["ontime_counter"] = userData["ontime_counter"] + 1
 
                     # get callins to determine if the load tracked
@@ -96,7 +96,7 @@ def handler(event, context):
                 else:
                     pass
 
-                if userData["track_counter"] / userData["load_counter"] > 0.8 and userData["ontime_counter"] /  userData["load_counter"] > 0.9:
+                if userData["track_counter"] / userData["load_counter"] >= 0.8 and userData["ontime_counter"] /  userData["load_counter"] >= 0.9:
                     userData["qualified"]="true"
         
 
