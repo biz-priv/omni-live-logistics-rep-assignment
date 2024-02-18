@@ -14,7 +14,7 @@ def handler(event, context):
     try:
         users=get_qualified_users()
         sorted_users = sort_users_by_last_used(users)
-        userlen=len("sorted users: ",sorted_users)
+        userlen=len(sorted_users)
         if userlen>0:
             print("users:",sorted_users)
         else:
