@@ -14,9 +14,14 @@ def handler(event, context):
     try:
         users=get_qualified_users()
         sorted_users = sort_users_by_last_used(users)
-        print(sorted_users)
+        userlen=len(sorted_users)
+        if userlen>0:
+            print("users:",sorted_users)
+        else:
+            print('no users qualified')
+            return
         # return sorted_users
-        find_parade_loads(sorted_users)
+        find_parade_loads(sorted_users,userlen)
         return "Function ran successfully"
     
     except Exception as error:
@@ -41,17 +46,22 @@ def handler(event, context):
         print("Error - ",error)
         raise Exception(f"{error}")
 
-def find_parade_loads(users):
+def find_parade_loads(users,userlen):
     try:
         response = searchParadeLoads()
         output = response.json()
+        loadcount=0
         index = 0
         if output is None:
             print('No new parade loads')
         else:
             if isinstance(output, list):
                 print('There are multiple loads')
-                for move in range(len(output)):
+                if len(output)>userlen:
+                    loadcount=userlen
+                else:
+                    loadcount=len(output)
+                for move in range(loadcount):
                     print(f"User Id - {users[index]['user_id']}")
                     update_dispatcher(output[move]['id'], users[index]["user_id"])
                     sendMailToUser( [users[index]["email"]], [users[index]["manager_email"]] , output[move]['id'] )

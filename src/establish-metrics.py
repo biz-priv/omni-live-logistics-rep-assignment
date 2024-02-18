@@ -105,7 +105,7 @@ def handler(event, context):
         for userRecord in data:
             try:
                 dyn_item = {key: serializer.serialize(value) for key, value in userRecord.items()}
-                print(dyn_item)
+                print("new-user-data",dyn_item)
                 put_item(os.environ["USER_METRICS_TABLE"], dyn_item)
             except Exception as e:
                 print(F"Error while saving record to dyanmo, error - {e} ,record - {userRecord}")
