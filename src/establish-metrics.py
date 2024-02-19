@@ -19,9 +19,7 @@ def handler(event, context):
 
     try:
         #get all users from dynamodb
-        list_of_users = get_all_users()
-        update_office_status()
-        
+        list_of_users = get_all_users()        
         #determine timestamps
         now = datetime.datetime.utcnow()
         yesterday = now - datetime.timedelta(days = 1)
@@ -49,6 +47,7 @@ def handler(event, context):
             userData["ontime_counter"] = 0
             userData["movements"] = []
             userData["qualified"] = "false"
+            userData["inOffice"]=update_office_status(user)
             
             data.append(userData)
             
