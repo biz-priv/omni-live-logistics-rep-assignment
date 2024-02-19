@@ -110,7 +110,7 @@ def handler(event, context):
             except Exception as e:
                 print(F"Error while saving record to dyanmo, error - {e} ,record - {userRecord}")
 
-        sendMail(data)
+        #sendMail(data)  #  no need to send emails anymore
 
         return "Function ran successfully"
     except Exception as error:
