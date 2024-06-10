@@ -1,3 +1,10 @@
+"""
+* File: src\shared\api.py
+* Project: Omni-live-logistics-rep-assignment
+* Author: Bizcloud Experts
+* Date: 2023-10-31
+* Confidential and Proprietary
+"""
 import requests
 import os
 
