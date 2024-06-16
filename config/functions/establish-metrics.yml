@@ -2,6 +2,8 @@ function:
   name: omni-live-logistics-establish-metrics-${self:provider.stage}
   handler: src/establish-metrics.handler
   description: omni live logistics establish metrics
+  tags:
+    Name: establish-metric
   package:
     patterns:
       - "!**/*"

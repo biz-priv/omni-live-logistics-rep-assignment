@@ -2,6 +2,8 @@ function:
   name: omni-live-logistics-getdata-${self:provider.stage}
   handler: src/getdata.handler
   description: omni live logistics getdata
+  tags:
+    Name: getdata
   package:
     patterns:
       - "!**/*"

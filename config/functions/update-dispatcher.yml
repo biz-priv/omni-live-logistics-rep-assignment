@@ -2,6 +2,8 @@ function:
   name: omni-live-logistics-update-dispatcher-${self:provider.stage}
   handler: src/update-dispatcher.handler
   description: omni live logistics update dispatcher
+  tags:
+    Name: update-dispatcher
   package:
     patterns:
       - "!**/*"
