@@ -1,4 +1,10 @@
-
+# """
+# * File: src/shared/user.py
+# * Project: Omni-live-logistics-rep-assignment
+# * Author: Bizcloud Experts
+# * Date: 2024-02-19
+# * Confidential and Proprietary
+# """
 import os
 import boto3
 from datetime import datetime
