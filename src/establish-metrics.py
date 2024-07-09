@@ -98,7 +98,8 @@ def handler(event, context):
 
                 if userData["track_counter"] / userData["load_counter"] >= 0.8 and userData["ontime_counter"] /  userData["load_counter"] >= 0.9:
                     userData["qualified"]="true"
-        
+                else:
+                    userData['qualified']="false"        
 
         serializer = TypeSerializer()
 
@@ -127,7 +128,7 @@ def handler(event, context):
                     }
                 },
                 'Subject': {
-                    'Data': f"The Lambda Function establish-metrics failed with error - {error} \n This Lambda is part of omni-rep-assignment",
+                    'Data': f"OMNI - Rep-Assignment \n The Lambda Function update-dispatcher failed with error - {error}",
                     'Charset': "UTF-8"
                 },
             },

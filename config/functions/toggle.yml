@@ -17,9 +17,23 @@ function:
     - http:
         path: /toggle
         method: POST
-        private: false
+        authorizer:
+            arn: ${ssm:/omni-rep-assignment/userpool}
         integration: lambda
-        cors: true
+        cors:
+          origin: "*"
+          headers:
+            - Access-Control-Allow-Origin
+            - X-Request-Id
+            - Access-Control-Allow-Headers
+            - Authorization
+            - Content-Type
+            - X-Amz-Date
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Customer-Id
+            - X-Api-Key 
+
   environment:
     USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
