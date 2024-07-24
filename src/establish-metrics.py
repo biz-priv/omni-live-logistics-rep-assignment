@@ -55,7 +55,8 @@ def handler(event, context):
             output = response.json()
             for move in range(len(output)):
                 num_of_stops = len(output[move]['stops'])
-                if move["orders"][0]["order_mode"] == "P":
+                if output[move]["orders"][0]["order_mode"] == "P":
+                    print("skipped move",output[move][id])
                     continue
                 #determine when the load actually delivered
                 for stop in range(len(output[move]['stops'])):
