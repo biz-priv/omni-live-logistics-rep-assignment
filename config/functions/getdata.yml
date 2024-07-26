@@ -1,5 +1,5 @@
 function:
-  name: omni-live-logistics-getdata-${self:provider.stage}
+  name: omni-live-getdata-refact${self:provider.stage}
   handler: src/getdata.handler
   description: omni live logistics getdata
   package:
@@ -8,8 +8,8 @@ function:
       - "src/shared/**"
       - "src/getdata.py"
   runtime: python3.7
-  layers:
-    - { Ref: OmniLiveLogisticsLambdaLayer }
+  # layers:
+  #   - { Ref: OmniLiveLogisticsLambdaLayer }
   timeout: 600
   # events:
   #   - schedule: cron(0 8 ? * MON-FRI *)
@@ -36,7 +36,7 @@ function:
             arn: ${ssm:/omni-rep-assignment/userpool}
         
   environment:
-    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    USER_METRICS_TABLE: "omni-live-user-metrics-refact-dev"
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
     API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
     API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}

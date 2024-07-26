@@ -1,4 +1,4 @@
-service: omni-live-logistics-rep-assignment
+service: omni-live-rep-assignment-refact
 
 plugins:
   - serverless-python-requirements
@@ -8,7 +8,9 @@ provider:
   runtime: python3.7
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
-  deploymentBucket: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+  deploymentBucket:
+    name: ${ssm:sls-deployment-bucket-${self:provider.stage}}
+    serverSideEncryption: AES256
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -29,6 +31,12 @@ provider:
       Action:
         - ssm:GetParameter
       Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - sts:AssumeRole
+      Resource: "arn:aws:iam::332281781429:role/rep-assignement-test"
+ 
+
   # role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
   # vpc:
   #   securityGroupIds:
@@ -39,18 +47,18 @@ provider:
 package:
   individually: true
 
-layers:
-  OmniLiveLogistics:
-    path: lambdaLayer/lib/python3.7
-    compatibleRuntimes:
-      - python3.7
-    description: "Dependencies jsonpath_rw for python functions"
+# layers:
+#   OmniLiveLogistics:
+#     path: lambdaLayer/lib/python3.7
+#     compatibleRuntimes:
+#       - python3.7
+#     description: "Dependencies jsonpath_rw for python functions"
 
 functions:
-  omni_live_logistics_establish_metrics: ${file(config/functions/establish-metrics.yml):function}
-  omni_live_update-dispatcher_metrics: ${file(config/functions/update-dispatcher.yml):function}
-  omni_live_logistics_toggle: ${file(config/functions/toggle.yml):function}
-  omni_live_logistics_getdata: ${file(config/functions/getdata.yml):function}
+  omni_live_logistics_establish_metrics-refact: ${file(config/functions/establish-metrics.yml):function}
+  # omni_live_update-dispatcher_metrics-refact: ${file(config/functions/update-dispatcher.yml):function}
+  # omni_live_logistics_toggle-refact: ${file(config/functions/toggle.yml):function}
+  # omni_live_logistics_getdata-refact: ${file(config/functions/getdata.yml):function}
 
 resources:
   Resources:

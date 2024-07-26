@@ -1,5 +1,5 @@
 function:
-  name: omni-live-logistics-update-dispatcher-${self:provider.stage}
+  name: omni-live-update-dispatcher-refact-${self:provider.stage}
   handler: src/update-dispatcher.handler
   description: omni live logistics update dispatcher
   package:
@@ -15,7 +15,7 @@ function:
         rate: cron(0/5 * ? * * *)
         enabled: false
   environment:
-    USER_METRICS_TABLE: ${ssm:/omni-live-logistics/${self:provider.stage}/user-metric/tableName~true}
+    USER_METRICS_TABLE: "omni-live-user-metrics-refact-dev"
     API_USERNAME: ${ssm:/omni-live-logistics/${self:provider.stage}/username~true}
     API_PASSWORD: ${ssm:/omni-live-logistics/${self:provider.stage}/password~true}
     API_URL: ${ssm:/omni-live-logistics/${self:provider.stage}/url~true}
