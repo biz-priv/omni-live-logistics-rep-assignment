@@ -7,7 +7,7 @@ function:
       - "!**/*"
       - "src/shared/**"
       - "src/update-dispatcher.py"
-  runtime: python3.7
+  runtime: python3.9
   layers:
     - { Ref: OmniLiveLogisticsLambdaLayer }
   events:
