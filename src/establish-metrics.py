@@ -1,5 +1,3 @@
-import datetime
-import dateutil.tz
 import os
 import sys
 import time
@@ -42,8 +40,8 @@ def handler(event, context):
                 userData["ontime_counter"] = ontime_info['num_on_time_stops']
 
                 if userData["load_counter"] > 0:
-                    if (userData["track_counter"] / userData["load_counter"] >= 0.8 and 
-                        userData["ontime_counter"] / userData["load_counter"] >= 0.9):
+                    if (int(userData["track_counter"]) / int(userData["load_counter"]) >= 0.8 and 
+                        int(userData["ontime_counter"]) / int(userData["load_counter"] >= 0.9)):
                         userData["qualified"] = "true"
 
             data.append(userData)
@@ -138,11 +136,36 @@ def query_ontime_info(movement_ids):
     """
     return execute_athena_query(query)[0]  # Assuming the first row contains the summary data
 
+
+
 def execute_athena_query(query):
+    # Replace these values with your own
+    role_arn = 'arn:aws:iam::332281781429:role/rep-assignement-test'
+    session_name = 'AthenaQuerySession'
+
+    # Assume the role
+    sts_client = boto3.client('sts')
+    assumed_role = sts_client.assume_role(
+        RoleArn=role_arn,
+        RoleSessionName=session_name
+    )
+
+    credentials = assumed_role['Credentials']
+
+    # Create a session with the assumed role credentials
+    session = boto3.Session(
+        aws_access_key_id=credentials['AccessKeyId'],
+        aws_secret_access_key=credentials['SecretAccessKey'],
+        aws_session_token=credentials['SessionToken']
+    )
+
+    # Create an Athena client using the session
+    athena_client = session.client('athena', region_name='us-east-1')
+
+    # Start the query execution
     query_start = athena_client.start_query_execution(
         QueryString=query,
-        QueryExecutionContext={'Database': 'your_database_name'},  # Replace with your database name
-        ResultConfiguration={'OutputLocation': 's3://your-query-results-bucket/'}  # Replace with your bucket name
+        QueryExecutionContext={'Database': 'dw-etl-lvlp-prod'}  # Replace with your database name  # Replace with your bucket name
     )
 
     query_execution_id = query_start['QueryExecutionId']
