@@ -21,7 +21,7 @@ def getdata():
                 del item['movements']
                 del item['days']
                 item['tracking']=int((item['track_counter']/item['load_counter'])*100)
-                item['ontime']=int((item['ontime_counter']/item['load_counter'])*100)
+                item['ontime']=int((item['ontime_counter']/item["num_stops"])*100)
                 del item['email']
                 del item['manager_email']
                 item["check"]= True if( (int((item['track_counter']/item['load_counter'])*100))>=80 and  (int((item['ontime_counter']/item['load_counter'])*100))>=90) else False

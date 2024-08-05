@@ -38,10 +38,11 @@ def handler(event, context):
 
                 ontime_info = query_ontime_info(userData["movements"])
                 userData["ontime_counter"] = ontime_info['num_on_time_stops']
+                userData["num_stops"]=ontime_info['num_stops']
 
                 if userData["load_counter"] > 0:
                     if (int(userData["track_counter"]) / int(userData["load_counter"]) >= 0.8 and 
-                        int(userData["ontime_counter"]) / int(userData["load_counter"] >= 0.9)):
+                        int(userData["ontime_counter"]) / int(userData["num_stops"]) >= 0.9):
                         userData["qualified"] = "true"
 
             data.append(userData)
@@ -140,7 +141,7 @@ def query_ontime_info(movement_ids):
 
 def execute_athena_query(query):
     # Replace these values with your own
-    role_arn = 'arn:aws:iam::332281781429:role/rep-assignement-test'
+    role_arn = 'arn:aws:iam::332281781429:role/rep-assignment-to-athena'
     session_name = 'AthenaQuerySession'
 
     # Assume the role
